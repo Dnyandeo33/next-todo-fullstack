@@ -1,41 +1,36 @@
-import axios from 'axios';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import RemoveTodo from './RemoveTodo';
+import { getTodo, removeTodo } from '../utils/apiRequast';
 
-const ListTodo = ({ todo }) => {
-  const [listOFTodo, setListOFTodo] = useState([]);
+const ListTodo = () => {
+  const queryClient = useQueryClient();
+  const {
+    data: listOFTodo,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['todo'],
+    queryFn: getTodo,
+  });
 
-  const getTodo = async () => {
-    try {
-      const res = await axios.get('/api/todo/');
-      const data = res.data;
-      setListOFTodo(data.todo);
-    } catch (error) {
-      console.log(error);
-    }
+  const removeMutation = useMutation({
+    mutationFn: removeTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todo'] });
+    },
+  });
+
+  const handleDelete = (id) => {
+    removeMutation.mutate(id);
   };
 
-  useEffect(() => {
-    getTodo();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete(`/api/todo/${id}`);
-      if (res.status === 200) {
-        setListOFTodo(listOFTodo.filter((todo) => todo._id !== id));
-        getTodo();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (isLoading) return <h1 className="text-center">Loading...</h1>;
+  if (isError) return <h1 className="text-center">Error: {error.message}</h1>;
 
   return (
     <>
-      {listOFTodo.map((todo) => (
+      {listOFTodo?.todo.map((todo) => (
         <div
           key={todo._id}
           className="flex items-center justify-between w-full p-4 border rounded-xl border-slate-400"
@@ -55,7 +50,12 @@ const ListTodo = ({ todo }) => {
             >
               Edit
             </Link>
-            <RemoveTodo id={todo._id} handleDelete={handleDelete} />
+            <button
+              onClick={() => handleDelete(todo._id)}
+              className="px-4 py-1 text-red-500 border rounded-md border-slate-400"
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
