@@ -1,6 +1,6 @@
 "use client"
-import Header from "./components/Header";
-import ListTodo from "./components/ListTodo";
+import Header from "../components/Header";
+import ListTodo from "../components/ListTodo";
 
 export default function Home() {
   return (

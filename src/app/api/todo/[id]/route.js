@@ -1,5 +1,5 @@
-import dbConnect from "@/app/lib/db";
-import TodoModel from "@/app/models/todo-list";
+import dbConnect from "@/lib/db";
+import TodoModel from "@/models/todo-list";
 import { NextResponse } from "next/server";
 
 

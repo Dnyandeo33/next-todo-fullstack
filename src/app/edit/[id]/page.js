@@ -1,38 +1,23 @@
 'use client';
-import Form from '@/app/components/Form';
-import { getTodoById, updateTodo } from '@/app/utils/apiRequast';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import Form from '@/components/Form';
+import useResources from '@/hooks/useResources';
+import { getTodoById, updateTodo } from '@/utils/apiRequast';
+import { useQuery } from '@tanstack/react-query';
+
 
 const Edit = ({ params }) => {
-    const { push } = useRouter();
-    const queryClient = useQueryClient();
     const { id } = params
-
+    const { mutate } = useResources(updateTodo)
     const {
         data: listOFTodo,
         isLoading,
-        isError,
-        error,
     } = useQuery({
         queryKey: ['todo', id],
         queryFn: () => getTodoById(id),
     });
 
-
-    const createTodoMutation = useMutation({
-        mutationFn: updateTodo,
-        onSuccess: () => {
-            push('/')
-            queryClient.invalidateQueries({ queryKey: ['todo'] })
-        },
-    })
-
     const updatedPost = (updateTodo) => {
-        console.log(updateTodo);
-
-        createTodoMutation.mutate({ id, ...updateTodo })
+        mutate({ id, ...updateTodo })
     }
     if (isLoading) return <h1 className='text-center'>Loading...</h1>
     return (

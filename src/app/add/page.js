@@ -1,25 +1,16 @@
 'use client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import useResources from '@/hooks/useResources';
+import { createTodo } from '@/utils/apiRequast';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import Form from '../components/Form';
-import { createTodo } from '../utils/apiRequast';
+import Form from '../../components/Form';
+
 
 const Add = () => {
     const { push } = useRouter();
-    const queryClient = useQueryClient();
-
-    const createTodoMutation = useMutation({
-        mutationFn: createTodo,
-        onSuccess: () => {
-            push('/')
-            queryClient.invalidateQueries({ queryKey: ['todo'] })
-        },
-    })
+    const { mutate } = useResources(createTodo)
 
     const newTodo = (formData) => {
-        createTodoMutation.mutate(formData)
+        mutate(formData)
     }
 
     return (

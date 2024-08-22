@@ -1,9 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import useResources from '@/hooks/useResources';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getTodo, removeTodo } from '../utils/apiRequast';
 
 const ListTodo = () => {
-  const queryClient = useQueryClient();
+  const { mutate } = useResources(removeTodo);
+
   const {
     data: listOFTodo,
     isLoading,
@@ -14,15 +16,8 @@ const ListTodo = () => {
     queryFn: getTodo,
   });
 
-  const removeMutation = useMutation({
-    mutationFn: removeTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['todo'] });
-    },
-  });
-
   const handleDelete = (id) => {
-    removeMutation.mutate(id);
+    mutate(id);
   };
 
   if (isLoading) return <h1 className="text-center">Loading...</h1>;
