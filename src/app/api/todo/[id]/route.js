@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export const GET = async (request, { params }) => {
     try {
         const { id } = params;
-
+        await dbConnect()
         const todo = await TodoModel.findById(id);
         if (!todo) {
             return new Response("Todo not found", { status: 404 });
@@ -24,7 +24,7 @@ export const PUT = async (request, { params }) => {
         const { id } = params;
         const { title, description } = await request.json();
 
-        dbConnect()
+        await dbConnect()
         const todo = await TodoModel.findById(id);
         if (!todo) return NextResponse.json({ success: false, message: 'todo not found' }, { status: 404 })
 
@@ -45,7 +45,7 @@ export const PUT = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
     try {
         const { id } = params;
-        dbConnect()
+        await dbConnect()
         const todo = await TodoModel.findById(id);
 
         if (!todo) return NextResponse.json({ success: false, message: 'todo not found' }, { status: 404 })

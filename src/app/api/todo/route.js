@@ -8,7 +8,7 @@ export const POST = async (request) => {
     try {
         const { title, description } = await request.json();
         if (!title || !description) return NextResponse.json({ success: false, message: 'All filed required' })
-        dbConnect()
+        await dbConnect()
         const todo = new TodoModel({
             title,
             description,
@@ -23,7 +23,7 @@ export const POST = async (request) => {
 
 export const GET = async (request) => {
     try {
-        dbConnect()
+        await dbConnect()
         const todo = await TodoModel.find()
         if (!todo) return NextResponse.json({ success: false, message: 'Not data found' })
         return NextResponse.json({ success: true, todo })
