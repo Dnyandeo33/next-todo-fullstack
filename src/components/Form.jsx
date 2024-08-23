@@ -28,8 +28,8 @@ const Form = ({ btnText, onclick, initialData }) => {
     <form onSubmit={handleSubmit}>
       <div className="flex justify-center w-2/3 mx-auto ">
         <div className="flex flex-col w-full gap-8 p-10 mt-8 rounded-lg shadow-lg bg-slate-500 h-90 ">
-          <h1 className="text-2xl font-bold text-center text-white">
-            Update Todo
+          <h1 className="text-2xl font-bold text-center text-white uppercase">
+            {btnText}
           </h1>
           <label className="relative block">
             <span className="absolute inset-y-0 left-0 flex items-center pl-2"></span>
